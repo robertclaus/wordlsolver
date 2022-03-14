@@ -16,18 +16,23 @@ word_limit = 100
 
 for secret_word in words:
     word_count += 1
+    guesses = []
     rules = []
-    print()
-    print()
-    print(f"Secret Word: {secret_word}")
-    for guesses in range(1, 10):
+    for guess_count in range(1, 10):
         guess_word, score = best_guess(rules, logging=False)
-        print(f"   Guess: {guess_word}")
+        guesses.append(guess_word)
         if guess_word == secret_word:
-            scores[secret_word] = guesses
-            print(f"      Took {guesses} guesses.")
+            scores[secret_word] = { "guesses": guesses, "count": len(guesses) }
             break
         new_rules = score_word(secret_word, guess_word)
         rules += new_rules
     if word_count > word_limit:
         break
+    if word_count % (word_limit / 20) == 0:
+        print(f"On word {word_count} of {word_limit}")
+
+
+import json
+  
+with open('scores', 'w') as convert_file:
+     convert_file.write(json.dumps(scores))

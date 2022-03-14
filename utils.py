@@ -35,10 +35,10 @@ def get_words():
 
     return words,words_by_letter_contains
 
-def apply_rules(words, words_by_letter, letter_rules):
+def apply_rules(letter_rules):
     # Eliminate words that break known rules
-    words_that_break_rules = set()
-    words = set(words)
+    words_by_letter = mem_words_by_letter
+    words = set(mem_words)
     
     for rule in letter_rules:
         if rule["rule"] == "out":
@@ -65,17 +65,17 @@ def confirmed_letters(letter_rules):
             letters_to_ignore.add(rule["letter"])
     return letters_to_ignore
 
-def word_scores(possible_words, words, letters_to_ignore):
+def word_scores(possible_words, letters_to_ignore):
+    words = mem_words
+
     letter_frequency = defaultdict(lambda: 0)
     word_score = defaultdict(lambda: 0)
 
     # Get letter frequency (number of words with those letters)
-    for letter in [letter for letter in all_letters if letter not in letters_to_ignore]:
-        count = 0
-        for word in possible_words:
-            if letter in word:
-                count += 1
-        letter_frequency[letter] = count
+    for word in possible_words:
+        for letter in word:
+            if letter not in letters_to_ignore:
+                letter_frequency[letter] += 1
             
     # Get number of words that would be eliminated by picking this word
     for word in words:
