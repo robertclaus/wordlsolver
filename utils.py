@@ -44,10 +44,6 @@ def apply_rules(letter_rules):
         if rule["rule"] == "out":
             for word in words_by_letter[rule["letter"]]:
                 words.discard(word)
-        elif rule["rule"] == "confirmed":
-            for word in list(words):
-                if word[rule["position"]-1] != rule["letter"]:
-                    words.discard(word)
         elif rule["rule"] == "exists":
             for word in list(words):
                 if rule["letter"] not in word:
@@ -56,6 +52,10 @@ def apply_rules(letter_rules):
             for word in list(words):
                 if word[rule["position"]-1] == rule["letter"]:
                     words.discard(word)
+        elif rule["rule"] == "confirmed":
+            for word in list(words):
+                if word[rule["position"]-1] != rule["letter"]:
+                    words.discard(word)
     return list(words)
 
 def confirmed_letters(letter_rules):
@@ -63,6 +63,7 @@ def confirmed_letters(letter_rules):
     for rule in letter_rules:
         if rule["rule"] == "confirmed":
             letters_to_ignore.add(rule["letter"])
+    print(letters_to_ignore)
     return letters_to_ignore
 
 def word_scores(possible_words, letters_to_ignore):
@@ -74,8 +75,10 @@ def word_scores(possible_words, letters_to_ignore):
     # Get letter frequency (number of words with those letters)
     for word in possible_words:
         for letter in word:
-            if letter not in letters_to_ignore:
-                letter_frequency[letter] += 1
+            letter_frequency[letter] += 1
+    
+    for letter in letters_to_ignore:
+        letter_frequency[letter] = 0
             
     # Get number of words that would be eliminated by picking this word
     for word in words:

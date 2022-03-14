@@ -10,16 +10,19 @@ words = [
     "about",
 ]
 words, words_by_letter = get_words()
+words = [
+    "waves"
+]
 scores = {}
 word_count = 0
-word_limit = 100
+word_limit = len(words)
 
 for secret_word in words:
     word_count += 1
     guesses = []
     rules = []
     for guess_count in range(1, 10):
-        guess_word, score = best_guess(rules, logging=False)
+        guess_word, score = best_guess(rules, logging=True)
         guesses.append(guess_word)
         if guess_word == secret_word:
             scores[secret_word] = { "guesses": guesses, "count": len(guesses) }
@@ -28,7 +31,7 @@ for secret_word in words:
         rules += new_rules
     if word_count > word_limit:
         break
-    if word_count % (word_limit / 20) == 0:
+    if word_count % int(1 + word_limit / 100) == 0:
         print(f"On word {word_count} of {word_limit}")
 
 
